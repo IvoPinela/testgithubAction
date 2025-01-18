@@ -142,7 +142,7 @@ jobs:
         run: |
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Link to Main Page](https://<username>.github.io/<repository>/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Link to Page 1](https://<username>.github.io/<repository>/page1/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Link to Page 2](https://<username>.github.io/<repository>/page2/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Link to Page 3](https://<username>.github.io/<repository>/page3/)" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Link to Main Page](https://github.com/${{ github.repository }}/tree/gh-pages/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Link to Page 1](https://github.com/${{ github.repository }}/tree/gh-pages/page1/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Link to Page 2](https://github.com/${{ github.repository }}/tree/gh-pages/page2/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Link to Page 3](https://github.com/${{ github.repository }}/tree/gh-pages/page3/)" >> $GITHUB_STEP_SUMMARY
