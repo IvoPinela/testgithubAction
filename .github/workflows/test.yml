@@ -12,7 +12,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Generate HTML
+      - name: Generate HTML file
         run: |
           mkdir -p public
           echo '<!DOCTYPE html>
@@ -28,17 +28,32 @@ jobs:
           </body>
           </html>' > public/index.html
 
+      - name: Upload HTML as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-artifact
+          path: public/
+
   deploy-pages:
-    needs: generate-html
+    needs: generate-html  # Certifica-se de que este job será executado após o job anterior
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Download HTML artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: html-artifact
+          path: ./public
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: public
-          token: ${{ secrets.GITHUB_TOKEN }}  # Usa o token do GitHub para deploy
-          
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   display-summary:
     needs: deploy-pages
     runs-on: ubuntu-latest
