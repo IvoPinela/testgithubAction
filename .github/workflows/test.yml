@@ -90,6 +90,11 @@ jobs:
           </body>
           </html>' > page3/index.html
 
+      - name: Verify file existence (for debugging)
+        run: |
+          echo "Verifying if the files are created"
+          ls -alh # Verifique se os arquivos foram criados
+
   deploy-pages:
     needs: generate-pages
     runs-on: ubuntu-latest
@@ -115,9 +120,10 @@ jobs:
       - name: Copy generated HTML files to gh-pages branch
         run: |
           echo "Copying generated HTML files to the gh-pages branch"
-          ls -alh # Verificar o conteúdo atual
+          # Verificando o conteúdo antes de copiar
+          ls -alh # Verifique se os arquivos estão presentes
           # Copiar os arquivos para a raiz da branch gh-pages
-          cp -R index.html page1 page2 page3 ./
+          cp -R ./index.html ./page1 ./page2 ./page3 ./
 
       - name: Commit and push changes to gh-pages branch
         env:
