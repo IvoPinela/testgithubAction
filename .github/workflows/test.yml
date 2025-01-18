@@ -114,10 +114,10 @@ jobs:
 
       - name: Copy generated HTML files to gh-pages branch
         run: |
-          # Verificar se os arquivos existem antes de copiar
           echo "Copying generated HTML files to the gh-pages branch"
           ls -alh # Verificar o conteúdo atual
-          cp -R ../index.html ../page1 ../page2 ../page3 ./
+          # Copiar os arquivos para a raiz da branch gh-pages
+          cp -R index.html page1 page2 page3 ./
 
       - name: Commit and push changes to gh-pages branch
         env:
