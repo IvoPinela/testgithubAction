@@ -118,22 +118,13 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Create gh-pages branch if it doesn't exist
-        run: |
-          git fetch --all
-          git checkout gh-pages || git checkout --orphan gh-pages
-
-      - name: Copy HTML files to root of gh-pages branch
-        run: |
-          cp -R ./public/* .
-
-      - name: Commit and push changes to gh-pages branch
+      - name: Commit and push changes to main branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add .
           git commit -m "Deploy HTML pages to GitHub Pages" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages --force
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
 
   display-summary:
     needs: deploy-pages
@@ -143,7 +134,7 @@ jobs:
         run: |
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Link to Main Page](https://github.com/${{ github.repository }}/pages/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Link to Page 1](https://github.com/${{ github.repository }}/pages/page1/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Link to Page 2](https://github.com/${{ github.repository }}/pages/page2/)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Link to Page 3](https://github.com/${{ github.repository }}/pages/page3/)" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Link to Main Page](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Link to Page 1](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page1/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Link to Page 2](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page2/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Link to Page 3](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page3/)" >> $GITHUB_STEP_SUMMARY
