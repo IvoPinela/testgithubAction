@@ -107,9 +107,15 @@ jobs:
           git fetch --all
           git checkout gh-pages || git checkout --orphan gh-pages
 
-      - name: Copy HTML files to root of gh-pages branch
+      - name: Clean the gh-pages branch (delete all files)
         run: |
-          cp -R ./index.html ./page1 ./page2 ./page3 .
+          # Remove all files from the current gh-pages branch to prepare for a fresh start
+          rm -rf ./*
+
+      - name: Copy generated HTML files to gh-pages branch
+        run: |
+          # Copy the new HTML files into the root of the gh-pages branch
+          cp -R ./index.html ./page1 ./page2 ./page3 ./
 
       - name: Commit and push changes to gh-pages branch
         env:
