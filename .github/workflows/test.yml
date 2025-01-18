@@ -1,4 +1,4 @@
-name: Generate HTML and Display in Browser
+name: Generate HTML and Deploy to GitHub Pages
 
 on:
   push:
@@ -28,14 +28,6 @@ jobs:
           </body>
           </html>' > public/index.html
 
-      - name: Commit HTML to Branch (GitHub Pages)
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add public/index.html
-          git commit -m "Add generated HTML file"
-          git push origin main
-
   deploy-pages:
     needs: generate-html
     runs-on: ubuntu-latest
@@ -45,8 +37,8 @@ jobs:
         with:
           branch: gh-pages
           folder: public
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+          token: ${{ secrets.GITHUB_TOKEN }}  # Usa o token do GitHub para deploy
+          
   display-summary:
     needs: deploy-pages
     runs-on: ubuntu-latest
@@ -55,4 +47,4 @@ jobs:
         run: |
           echo "## HTML File Generated and Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the HTML file by clicking the link below:" >> $GITHUB_STEP_SUMMARY
-          echo "Open [HTML file in browser](https://github.com/${{ github.repository }}/blob/gh-pages/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Open [HTML file in browser](https://<USERNAME>.github.io/<REPOSITORY>/index.html)" >> $GITHUB_STEP_SUMMARY
