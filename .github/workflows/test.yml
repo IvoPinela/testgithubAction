@@ -1,4 +1,4 @@
-name: Generate HTML and Deploy to GitHub Pages
+name: Generate HTML Pages and Deploy to GitHub Pages
 
 on:
   push:
@@ -6,45 +6,108 @@ on:
       - main
 
 jobs:
-  generate-html:
+  generate-pages:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Generate HTML file
+      - name: Create index.html (Main page)
         run: |
-          mkdir -p public
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>GitHub Actions Example</title>
+              <title>Main Page</title>
           </head>
           <body>
-              <h1>Bem-vindo ao GitHub Actions!</h1>
-              <p>Este é um exemplo de página estática gerada automaticamente.</p>
+              <h1>Main Page</h1>
+              <p>This is the main page of the GitHub Pages website.</p>
+              <a href="page1/index.html">Go to Page 1</a><br>
+              <a href="page2/index.html">Go to Page 2</a><br>
+              <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > public/index.html
+          </html>' > index.html
 
-      - name: Upload HTML as an artifact
+      - name: Create page1/index.html
+        run: |
+          mkdir -p page1
+          echo '<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Page 1</title>
+          </head>
+          <body>
+              <h1>Page 1</h1>
+              <p>This is Page 1.</p>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page2/index.html">Go to Page 2</a><br>
+              <a href="page3/index.html">Go to Page 3</a>
+          </body>
+          </html>' > page1/index.html
+
+      - name: Create page2/index.html
+        run: |
+          mkdir -p page2
+          echo '<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Page 2</title>
+          </head>
+          <body>
+              <h1>Page 2</h1>
+              <p>This is Page 2.</p>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page1/index.html">Go to Page 1</a><br>
+              <a href="page3/index.html">Go to Page 3</a>
+          </body>
+          </html>' > page2/index.html
+
+      - name: Create page3/index.html
+        run: |
+          mkdir -p page3
+          echo '<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Page 3</title>
+          </head>
+          <body>
+              <h1>Page 3</h1>
+              <p>This is Page 3.</p>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page1/index.html">Go to Page 1</a><br>
+              <a href="page2/index.html">Go to Page 2</a>
+          </body>
+          </html>' > page3/index.html
+
+      - name: Upload HTML pages as artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: html-artifact
-          path: public/
+          name: html-pages
+          path: |
+            index.html
+            page1/index.html
+            page2/index.html
+            page3/index.html
 
   deploy-pages:
-    needs: generate-html
+    needs: generate-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Download the generated HTML artifact
+      - name: Download HTML pages artifact
         uses: actions/download-artifact@v3
         with:
-          name: html-artifact
+          name: html-pages
           path: ./public
 
       - name: Set up Git configuration for push
@@ -56,24 +119,27 @@ jobs:
         run: |
           git fetch origin gh-pages || git checkout --orphan gh-pages
 
-      - name: Copy files to root of gh-pages branch
+      - name: Copy HTML files to root of gh-pages branch
         run: |
-          cp -R public/* .
+          cp -R ./public/* .
 
       - name: Commit and push changes to gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add .
-          git commit -m "Deploy HTML to GitHub Pages"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} gh-pages --force
+          git commit -m "Deploy HTML pages to GitHub Pages"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages --force
 
   display-summary:
     needs: deploy-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Display Link to Open HTML in Browser
+      - name: Display link to pages
         run: |
-          echo "## HTML File Generated and Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
-          echo "You can view the HTML file by clicking the link below:" >> $GITHUB_STEP_SUMMARY
-          echo "Open [HTML file in browser](https://<USERNAME>.github.io/<REPOSITORY>/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Link to Main Page](https://<username>.github.io/<repository>/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Link to Page 1](https://<username>.github.io/<repository>/page1/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Link to Page 2](https://<username>.github.io/<repository>/page2/)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Link to Page 3](https://<username>.github.io/<repository>/page3/)" >> $GITHUB_STEP_SUMMARY
