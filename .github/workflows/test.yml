@@ -24,7 +24,7 @@ jobs:
           </head>
           <body>
               <h1>Bem-vindo ao GitHub Actions!</h1>
-              <p>Este é um exemplo de página estática gerada automaticamente e visível no summary.</p>
+              <p>Este é um exemplo de página estática gerada automaticamente.</p>
           </body>
           </html>' > public/index.html
 
@@ -38,9 +38,8 @@ jobs:
     needs: generate-html
     runs-on: ubuntu-latest
     steps:
-      - name: Display HTML in Summary
+      - name: Display Link to Artifact in Summary
         run: |
           echo "## HTML File Generated" >> $GITHUB_STEP_SUMMARY
-          echo "Click [here](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts) to download the HTML artifact" >> $GITHUB_STEP_SUMMARY
-          echo "Or you can view the HTML file directly by following the link below:" >> $GITHUB_STEP_SUMMARY
-          echo "![HTML preview](https://raw.githubusercontent.com/${{ github.repository }}/main/public/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "You can download the HTML file from the artifact below:" >> $GITHUB_STEP_SUMMARY
+          echo "Click [here to download the HTML artifact](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts)" >> $GITHUB_STEP_SUMMARY
