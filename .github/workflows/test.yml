@@ -55,4 +55,4 @@ jobs:
         run: |
           echo "## HTML File Generated and Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the HTML file by clicking the link below:" >> $GITHUB_STEP_SUMMARY
-          echo "Open [HTML file in browser](https://${{ github.repository.split('/')[0] }}.github.io/${{ github.repository.split('/')[1] }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Open [HTML file in browser](https://github.com/${{ github.repository }}/blob/gh-pages/index.html)" >> $GITHUB_STEP_SUMMARY
