@@ -1,4 +1,4 @@
-name: Generate HTML and Display in Summary
+name: Generate HTML and Display Artifact Link
 
 on:
   push:
@@ -38,8 +38,8 @@ jobs:
     needs: generate-html
     runs-on: ubuntu-latest
     steps:
-      - name: Display Link to Artifact in Summary
+      - name: Display Link to Download Artifact in Summary
         run: |
           echo "## HTML File Generated" >> $GITHUB_STEP_SUMMARY
           echo "You can download the HTML file from the artifact below:" >> $GITHUB_STEP_SUMMARY
-          echo "Click [here to download the HTML artifact](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts)" >> $GITHUB_STEP_SUMMARY
+          echo "Click [here to download the HTML artifact](https://github.com/${{ github.repository }}/actions/artifacts)" >> $GITHUB_STEP_SUMMARY
