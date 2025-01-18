@@ -114,7 +114,9 @@ jobs:
 
       - name: Clean the gh-pages branch (delete all files)
         run: |
-          # Remove all files from the current gh-pages branch to prepare for a fresh start
+          # Garanta que você está na branch gh-pages
+          git checkout gh-pages
+          # Remove todos os arquivos da branch gh-pages
           rm -rf ./*
 
       - name: Copy generated HTML files to gh-pages branch
