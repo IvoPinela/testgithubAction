@@ -133,9 +133,10 @@ jobs:
     steps:
       - name: Display link to pages
         run: |
-          USERNAME=${{ github.actor }}  # Variável para o nome de usuário
-          REPOSITORY=${{ github.repository }}  # Variável para o nome do repositório
+          USERNAME=$GITHUB_ACTOR
+          REPOSITORY=$GITHUB_REPOSITORY
           
+          # Exibir links no resumo do GitHub Actions
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
           echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPOSITORY/index.html)" >> $GITHUB_STEP_SUMMARY
