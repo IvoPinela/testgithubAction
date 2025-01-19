@@ -15,9 +15,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Create relatorios directory and main-page.html (Main page)
+      - name: Clean the docs directory
         run: |
-          mkdir -p relatorios
+          rm -rf docs/* # Limpa o diretório 'docs' antes de adicionar os novos arquivos HTQML
+
+      - name: Create docs directory and index.html (Main page)
+        run: |
+          mkdir -p docs
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -32,30 +36,30 @@ jobs:
               <a href="page2/index.html">Go to Page 2</a><br>
               <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > relatorios/main-page.html
+          </html>' > docs/index.html
 
       - name: Create page1/index.html
         run: |
-          mkdir -p relatorios/page1
+          mkdir -p docs/page1
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Page 1</title>
+              <title>Page 1111111212121212</title>
           </head>
           <body>
-              <h1>Page 1</h1>
-              <p>This is Page 1.</p>
-              <a href="../main-page.html">Back to Main Page</a><br>
-              <a href="../page2/index.html">Go to Page 2</a><br>
-              <a href="../page3/index.html">Go to Page 3</a>
+              <h1>Page 345</h1>
+              <p>This is Test 12345 Page 5.</p>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page2/index.html">Go to Page 2</a><br>
+              <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > relatorios/page1/index.html
+          </html>' > docs/page1/index.html
 
       - name: Create page2/index.html
         run: |
-          mkdir -p relatorios/page2
+          mkdir -p docs/page2
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -66,15 +70,15 @@ jobs:
           <body>
               <h1>Page 2</h1>
               <p>This is Page 2.</p>
-              <a href="../main-page.html">Back to Main Page</a><br>
-              <a href="../page1/index.html">Go to Page 1</a><br>
-              <a href="../page3/index.html">Go to Page 3</a>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page1/index.html">Go to Page 1</a><br>
+              <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > relatorios/page2/index.html
+          </html>' > docs/page2/index.html
 
       - name: Create page3/index.html
         run: |
-          mkdir -p relatorios/page3
+          mkdir -p docs/page3
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -85,25 +89,46 @@ jobs:
           <body>
               <h1>Page 3</h1>
               <p>This is Page 3.</p>
-              <a href="../main-page.html">Back to Main Page</a><br>
-              <a href="../page1/index.html">Go to Page 1</a><br>
-              <a href="../page2/index.html">Go to Page 2</a>
+              <a href="../index.html">Back to Main Page</a><br>
+              <a href="page1/index.html">Go to Page 1</a><br>
+              <a href="page2/index.html">Go to Page 2</a>
           </body>
-          </html>' > relatorios/page3/index.html
+          </html>' > docs/page3/index.html
 
-      - name: Commit and push changes to main branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Usa o token de autenticação
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          
-          git add relatorios/
-          git diff --cached --exit-code || git commit -m "Deploy HTML pages to relatorios folder"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
+      - name: Upload generated HTML files as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-pages
+          path: docs/
 
   deploy-pages:
     needs: generate-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Download generated HTML pages artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: html-pages
+          path: docs/
+
+      - name: Set up Git configuration for push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Commit and push changes to main branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add docs/
+          git diff --cached --exit-code || git commit -m "Deploy HTML pages to docs folder"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
+
+  display-summary:
+    needs: deploy-pages
     runs-on: ubuntu-latest
     steps:
       - name: Display link to pages
@@ -117,3 +142,7 @@ jobs:
           echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPOSITORY/relatorios/page1/index.html)" >> $GITHUB_STEP_SUMMARY
           echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPOSITORY/relatorios/page2/index.html)" >> $GITHUB_STEP_SUMMARY
           echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPOSITORY/relatorios/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+
+
+
+
