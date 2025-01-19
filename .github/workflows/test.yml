@@ -47,8 +47,8 @@ jobs:
               <h1>Page 1</h1>
               <p>This is Page 1.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page2/index.html">Go to Page 2</a><br>
-              <a href="page3/index.html">Go to Page 3</a>
+              <a href="../page2/index.html">Go to Page 2</a><br>
+              <a href="../page3/index.html">Go to Page 3</a>
           </body>
           </html>' > page1/index.html
 
@@ -66,8 +66,8 @@ jobs:
               <h1>Page 2</h1>
               <p>This is Page 2.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page1/index.html">Go to Page 1</a><br>
-              <a href="page3/index.html">Go to Page 3</a>
+              <a href="../page1/index.html">Go to Page 1</a><br>
+              <a href="../page3/index.html">Go to Page 3</a>
           </body>
           </html>' > page2/index.html
 
@@ -85,15 +85,20 @@ jobs:
               <h1>Page 3</h1>
               <p>This is Page 3.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page1/index.html">Go to Page 1</a><br>
-              <a href="page2/index.html">Go to Page 2</a>
+              <a href="../page1/index.html">Go to Page 1</a><br>
+              <a href="../page2/index.html">Go to Page 2</a>
           </body>
           </html>' > page3/index.html
 
-      - name: Verify file existence (for debugging)
-        run: |
-          echo "Verifying if the files are created"
-          ls -alh # Verify if files are created
+      - name: Save HTML files as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-pages
+          path: |
+            index.html
+            page1/index.html
+            page2/index.html
+            page3/index.html
 
   deploy-pages:
     needs: generate-pages
@@ -101,6 +106,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Download HTML artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: html-pages
+          path: html-pages
 
       - name: Set up Git configuration for push
         run: |
@@ -119,10 +130,9 @@ jobs:
           # Remove all files in the pg-pages branch
           rm -rf ./*
 
-      - name: Copy generated HTML files to pg-pages branch
+      - name: Copy downloaded HTML files to pg-pages branch
         run: |
-          echo "Copying generated HTML files to the pg-pages branch"
-          cp -R ./index.html ./page1 ./page2 ./page3 ./
+          cp -R html-pages/* ./
 
       - name: Commit and push changes to pg-pages branch
         env:
