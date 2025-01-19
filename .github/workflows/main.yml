@@ -138,10 +138,10 @@ jobs:
           
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPOSITORY/relatorios/main-page.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPOSITORY/relatorios/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPOSITORY/relatorios/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPOSITORY/relatorios/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPOSITORY/main-page.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPOSITORY/page1/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPOSITORY/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPOSITORY/page3/index.html)" >> $GITHUB_STEP_SUMMARY
 
 
 
