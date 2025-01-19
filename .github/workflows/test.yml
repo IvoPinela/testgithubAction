@@ -113,21 +113,16 @@ jobs:
           name: html-pages
           path: html-pages
 
-      - name: Set up Git configuration for push
+      - name: Create and switch to pg-pages branch
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          if git show-ref --verify --quiet refs/heads/pg-pages; then
+            git checkout pg-pages
+          else
+            git checkout --orphan pg-pages
+          fi
 
-      - name: Create pg-pages branch if it doesn't exist
+      - name: Clean the pg-pages branch
         run: |
-          git fetch --all
-          git checkout pg-pages || git checkout --orphan pg-pages
-
-      - name: Clean the pg-pages branch (delete all files)
-        run: |
-          # Ensure we're on the pg-pages branch
-          git checkout pg-pages
-          # Remove all files in the pg-pages branch
           rm -rf ./*
 
       - name: Copy downloaded HTML files to pg-pages branch
