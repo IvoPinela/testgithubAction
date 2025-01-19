@@ -17,7 +17,7 @@ jobs:
 
       - name: Clean the public directory
         run: |
-          rm -rf public/* # Limpa o diretório 'public' antes de adicionar os novos arquivos HTML
+          rm -rf public/* # Limpa o diretório 'public' antes de adicionar os novos arquivos HTQML
 
       - name: Create public directory and index.html (Main page)
         run: |
@@ -95,10 +95,11 @@ jobs:
           </body>
           </html>' > public/page3/index.html
 
-      - name: Verify file existence (for debugging)
-        run: |
-          echo "Verifying if the files are created"
-          ls -alh public/ # Verifique se os arquivos estão na pasta public
+      - name: Upload generated HTML files as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-pages
+          path: public/
 
   deploy-pages:
     needs: generate-pages
@@ -106,6 +107,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Download generated HTML pages artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: html-pages
+          path: public/
 
       - name: Set up Git configuration for push
         run: |
