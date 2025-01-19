@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Save to priv
+name: Generate HTML Pages and Publish to GitHub Pages
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
           </head>
           <body>
               <h1>Main Page</h1>
-              <p>This is the main page.</p>
+              <p>This is the main page of the GitHub Pages website.</p>
               <a href="page1/index.html">Go to Page 1</a><br>
               <a href="page2/index.html">Go to Page 2</a><br>
               <a href="page3/index.html">Go to Page 3</a>
@@ -105,13 +105,36 @@ jobs:
           git diff --cached --exit-code || git commit -m "Generate HTML files in priv/"
           git push origin main
 
-  upload-artifact:
+  publish-to-gh-pages:
     needs: generate-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Upload generated HTML files as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: html-pages
-          path: priv/
+      - name: Check out repository
+        uses: actions/checkout@v3
 
+      - name: Set up Git configuration for push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Publish HTML files to GitHub Pages
+        run: |
+          git checkout --orphan gh-pages # Cria um branch de página separado
+          git rm -rf . # Remove arquivos anteriores (se houver)
+          cp -r priv/* . # Copia arquivos de priv/ para a raiz
+          git add . # Adiciona os novos arquivos
+          git commit -m "Publish HTML files to GitHub Pages"
+          git push origin gh-pages --force
+
+  display-summary:
+    needs: publish-to-gh-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display link to pages
+        run: |
+          echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Preview Main Page](https://username.github.io/${{ github.repository }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Preview Page 1](https://username.github.io/${{ github.repository }}/page1/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Preview Page 2](https://username.github.io/${{ github.repository }}/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Preview Page 3](https://username.github.io/${{ github.repository }}/page3/index.html)" >> $GITHUB_STEP_SUMMARY
