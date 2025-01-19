@@ -134,7 +134,7 @@ jobs:
       - name: Display link to pages
         run: |
           USERNAME=$GITHUB_ACTOR
-          REPOSITORY=$GITHUB_REPOSITORY
+          REPOSITORY=$(basename $GITHUB_REPOSITORY)
           
           # Exibir links no resumo do GitHub Actions
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
