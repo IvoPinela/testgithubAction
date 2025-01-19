@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Deploy to GitHub Pages
+name: Generate HTML Pages and Deploy to Repository for Preview
 
 on:
   push:
@@ -15,8 +15,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Create index.html (Main page)
+      - name: Clean the priv directory
         run: |
+          rm -rf priv/* # Limpa o diretório 'priv'
+
+      - name: Create priv directory and index.html (Main page)
+        run: |
+          mkdir -p priv
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -26,16 +31,16 @@ jobs:
           </head>
           <body>
               <h1>Main Page</h1>
-              <p>This is the main page of the GitHub Pages website.</p>
+              <p>This is the main page of the GitHub Actions-generated HTML.</p>
               <a href="page1/index.html">Go to Page 1</a><br>
               <a href="page2/index.html">Go to Page 2</a><br>
               <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > index.html
+          </html>' > priv/index.html
 
       - name: Create page1/index.html
         run: |
-          mkdir -p page1
+          mkdir -p priv/page1
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -47,14 +52,14 @@ jobs:
               <h1>Page 1</h1>
               <p>This is Page 1.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page2/index.html">Go to Page 2</a><br>
-              <a href="page3/index.html">Go to Page 3</a>
+              <a href="../page2/index.html">Go to Page 2</a><br>
+              <a href="../page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > page1/index.html
+          </html>' > priv/page1/index.html
 
       - name: Create page2/index.html
         run: |
-          mkdir -p page2
+          mkdir -p priv/page2
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -66,14 +71,14 @@ jobs:
               <h1>Page 2</h1>
               <p>This is Page 2.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page1/index.html">Go to Page 1</a><br>
-              <a href="page3/index.html">Go to Page 3</a>
+              <a href="../page1/index.html">Go to Page 1</a><br>
+              <a href="../page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > page2/index.html
+          </html>' > priv/page2/index.html
 
       - name: Create page3/index.html
         run: |
-          mkdir -p page3
+          mkdir -p priv/page3
           echo '<!DOCTYPE html>
           <html lang="en">
           <head>
@@ -85,51 +90,30 @@ jobs:
               <h1>Page 3</h1>
               <p>This is Page 3.</p>
               <a href="../index.html">Back to Main Page</a><br>
-              <a href="page1/index.html">Go to Page 1</a><br>
-              <a href="page2/index.html">Go to Page 2</a>
+              <a href="../page1/index.html">Go to Page 1</a><br>
+              <a href="../page2/index.html">Go to Page 2</a>
           </body>
-          </html>' > page3/index.html
+          </html>' > priv/page3/index.html
 
-      - name: Verify file existence (for debugging)
-        run: |
-          echo "Verifying if the files are created"
-          ls -alh # Verifique se os arquivos foram criados
-
-  deploy-pages:
-    needs: generate-pages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Set up Git configuration for push
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      - name: Commit and push changes to main branch
+      - name: Commit and push HTML files to branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add .
-          git commit -m "Deploy HTML pages to main branch" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add priv/
+          git diff --cached --exit-code || git commit -m "Generate and update HTML pages"
+          git push origin main --force
 
   display-summary:
-    needs: deploy-pages
+    needs: generate-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Display link to pages
+      - name: Display preview links
         run: |
-          echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
-          echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Preview Main Page](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Preview Page 1](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Preview Page 3](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page3/index.html)" >> $GITHUB_STEP_SUMMARY
-
-           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Preview Main Page](https://raw.githack.com/${{ github.repository }}/main/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Preview Page 1](https://raw.githack.com/${{ github.repository }}/main/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://raw.githack.com/${{ github.repository }}/main/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Preview Page 3](https://raw.githack.com/${{ github.repository }}/main/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "## HTML Pages Preview" >> $GITHUB_STEP_SUMMARY
+          echo "The following pages are available for preview:" >> $GITHUB_STEP_SUMMARY
+          echo "- [Main Page](https://github.com/${{ github.repository }}/blob/main/priv/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Page 1](https://github.com/${{ github.repository }}/blob/main/priv/page1/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Page 2](https://github.com/${{ github.repository }}/blob/main/priv/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Page 3](https://github.com/${{ github.repository }}/blob/main/priv/page3/index.html)" >> $GITHUB_STEP_SUMMARY
