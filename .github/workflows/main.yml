@@ -17,12 +17,8 @@ jobs:
 
       - name: Remove existing docs folder (if exists)
         run: |
-          rm -rf docs  # Remove completamente a pasta docs e seu conteúdo
-
-      - name: Recreate docs folder and move new files
-        run: |
-          mkdir -p docs  # Recria o diretório docs
-       
+          rm -rf docs # Remove a pasta docs e todo o conteúdo antigo
+          mkdir docs  # Recria a pasta docs vazia
 
       - name: Create docs directory and index.html (Main page)
         run: |
@@ -100,30 +96,6 @@ jobs:
           </body>
           </html>' > docs/page3/index.html
 
-      - name: Upload generated HTML files as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: html-pages
-          path: docs/
-
-  deploy-pages:
-    needs: generate-pages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Download generated HTML pages artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: html-pages
-          path: docs/
-
-      - name: Set up Git configuration for push
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
       - name: Commit and push changes to main branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -132,8 +104,41 @@ jobs:
           git diff --cached --exit-code || git commit -m "Deploy HTML pages to docs folder"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
 
+
+  #     - name: Upload generated HTML files as artifact
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: html-pages
+  #         path: docs/
+
+  # deploy-pages:
+  #   needs: generate-pages
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Download generated HTML pages artifact
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: html-pages
+  #         path: docs/
+
+  #     - name: Set up Git configuration for push
+  #       run: |
+  #         git config --global user.name "GitHub Actions"
+  #         git config --global user.email "actions@github.com"
+
+  #     - name: Commit and push changes to main branch
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         git add docs/
+  #         git diff --cached --exit-code || git commit -m "Deploy HTML pages to docs folder"
+  #         git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main --force
+
   display-summary:
-    needs: deploy-pages
+    needs: generate-pages
     runs-on: ubuntu-latest
     steps:
       - name: Display link to pages
