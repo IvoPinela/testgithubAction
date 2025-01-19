@@ -95,12 +95,16 @@ jobs:
           </body>
           </html>' > priv/page3/index.html
 
+      - name: List contents of the priv directory
+        run: |
+          ls -R priv/ # Lista os arquivos e subdiretórios para verificar se tudo foi criado corretamente
+
       - name: Check for changes and commit if necessary
         run: |
-          git status # Verifica o status para garantir que há alterações
-          git add priv/ # Adiciona as alterações
-          git diff --cached --exit-code || git commit -m "Generate HTML files in priv/" # Realiza o commit apenas se houver mudanças
-          git push origin main # Empurra as alterações para a branch main
+          git status # Verifica se há alterações detectadas pelo Git
+          git add -A # Adiciona todos os arquivos e alterações
+          git diff --cached --exit-code || git commit -m "Generate HTML files in priv/" # Comita se houver alterações
+          git push origin main # Empurra para a branch main
 
   display-summary:
     needs: generate-pages
