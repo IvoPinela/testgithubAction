@@ -58,7 +58,7 @@ jobs:
           </body>
           </html>' > docs/page1/teste.html
 
-      - name: Create page2/index.html
+      - name: Create page2/teste.html
         run: |
           mkdir -p docs/page2
           echo '<!DOCTYPE html>
@@ -75,7 +75,7 @@ jobs:
               <a href="page1/index.html">Go to Page 1</a><br>
               <a href="page3/index.html">Go to Page 3</a>
           </body>
-          </html>' > docs/page2/index.html
+          </html>' > docs/page2/teste.html
 
       - name: Create page3/index.html
         run: |
@@ -156,7 +156,7 @@ jobs:
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
           echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPOSITORY/index.html)" >> $GITHUB_STEP_SUMMARY
           echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPOSITORY/page1/teste.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPOSITORY/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPOSITORY/page2/teste.html)" >> $GITHUB_STEP_SUMMARY
           echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPOSITORY/page3/index.html)" >> $GITHUB_STEP_SUMMARY
 
 
