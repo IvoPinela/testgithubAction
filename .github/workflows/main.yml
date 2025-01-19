@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Publish to GitHub Pages
+name: Generate HTML Pages and Deploy to GitHub Pages
 
 on:
   push:
