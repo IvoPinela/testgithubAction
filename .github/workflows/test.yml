@@ -135,7 +135,7 @@ jobs:
         run: |
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Preview Main Page](https://raw.githack.com/${{ github.repository }}/main/public/index.html?run_id=${{ github.run_id })" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Preview Page 1](https://raw.githack.com/${{ github.repository }}/main/public/page1/index.html?run_id=${{ github.run_id })" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://raw.githack.com/${{ github.repository }}/main/public/page2/index.html?run_id=${{ github.run_id })" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Preview Page 3](https://raw.githack.com/${{ github.repository }}/main/public/page3/index.html?run_id=${{ github.run_id })" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Preview Main Page](https://raw.githack.com/${{ github.repository }}/main/public/index.html?run_id=${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Preview Page 1](https://raw.githack.com/${{ github.repository }}/main/public/page1/index.html?run_id=${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Preview Page 2](https://raw.githack.com/${{ github.repository }}/main/public/page2/index.html?run_id=${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Preview Page 3](https://raw.githack.com/${{ github.repository }}/main/public/page3/index.html?run_id=${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
