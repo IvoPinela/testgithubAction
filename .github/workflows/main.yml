@@ -95,6 +95,11 @@ jobs:
               <a href="page2/index.html">Go to Page 2</a>
           </body>
           </html>' > docs/page3/index.html
+      
+      - name: Set up Git configuration for push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
       - name: Commit and push changes to main branch
         env:
