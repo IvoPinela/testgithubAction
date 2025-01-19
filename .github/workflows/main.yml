@@ -95,15 +95,12 @@ jobs:
           </body>
           </html>' > priv/page3/index.html
 
-      - name: Commit and push files to branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check for changes and commit if necessary
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add priv/
-          git diff --cached --exit-code || git commit -m "Generate HTML files in priv/"
-          git push origin main
+          git status # Verifica o status para garantir que há alterações
+          git add priv/ # Adiciona as alterações
+          git diff --cached --exit-code || git commit -m "Generate HTML files in priv/" # Realiza o commit apenas se houver mudanças
+          git push origin main # Empurra as alterações para a branch main
 
   display-summary:
     needs: generate-pages
@@ -111,14 +108,13 @@ jobs:
     steps:
       - name: Display link to pages
         run: |
-          # Get the username and repository name dynamically
           USERNAME=${{ github.actor }}
           REPO_NAME=${{ github.repository }}
           
           # Display links in the step summary
           echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPO_NAME/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPO_NAME/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPO_NAME/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPO_NAME/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Preview Main Page](https://$USERNAME.github.io/$REPO_NAME/priv/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Preview Page 1](https://$USERNAME.github.io/$REPO_NAME/priv/page1/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Preview Page 2](https://$USERNAME.github.io/$REPO_NAME/priv/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Preview Page 3](https://$USERNAME.github.io/$REPO_NAME/priv/page3/index.html)" >> $GITHUB_STEP_SUMMARY
