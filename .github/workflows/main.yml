@@ -22,7 +22,7 @@ jobs:
       - name: Recreate docs folder and move new files
         run: |
           mkdir -p docs  # Recria o diretório docs
-          mv docs/* docs/  # Move os arquivos para a pasta docs
+       
 
       - name: Create docs directory and index.html (Main page)
         run: |
