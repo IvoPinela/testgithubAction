@@ -15,9 +15,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Clean the docs directory
+      - name: Remove existing docs folder (if exists)
         run: |
-          rm -rf docs/* # Limpa o diretório 'docs' antes de adicionar os novos arquivos HTQML
+          rm -rf docs  # Remove completamente a pasta docs e seu conteúdo
+
+      - name: Recreate docs folder and move new files
+        run: |
+          mkdir -p docs  # Recria o diretório docs
+          mv docs/* docs/  # Move os arquivos para a pasta docs
 
       - name: Create docs directory and index.html (Main page)
         run: |
