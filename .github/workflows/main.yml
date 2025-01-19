@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Deploy to Repository for Preview
+name: Generate HTML Pages and Deploy to GitHub Pages
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
 
       - name: Clean the priv directory
         run: |
-          rm -rf priv/* # Limpa o diretório 'priv'
+          rm -rf priv/*
 
       - name: Create priv directory and index.html (Main page)
         run: |
@@ -31,7 +31,7 @@ jobs:
           </head>
           <body>
               <h1>Main Page</h1>
-              <p>This is the main page of the GitHub Actions-generated HTML.</p>
+              <p>This is the main page.</p>
               <a href="page1/index.html">Go to Page 1</a><br>
               <a href="page2/index.html">Go to Page 2</a><br>
               <a href="page3/index.html">Go to Page 3</a>
@@ -95,25 +95,22 @@ jobs:
           </body>
           </html>' > priv/page3/index.html
 
-      - name: Commit and push HTML files to branch
+      - name: Commit and push files to branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add priv/
-          git diff --cached --exit-code || git commit -m "Generate and update HTML pages"
-          git push origin main --force
+          git diff --cached --exit-code || git commit -m "Generate HTML files"
+          git push origin main
 
-  display-summary:
+  deploy-pages:
     needs: generate-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Display preview links
-        run: |
-          echo "## HTML Pages Preview" >> $GITHUB_STEP_SUMMARY
-          echo "The following pages are available for preview:" >> $GITHUB_STEP_SUMMARY
-          echo "- [Main Page](https://github.com/${{ github.repository }}/blob/main/priv/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Page 1](https://github.com/${{ github.repository }}/blob/main/priv/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Page 2](https://github.com/${{ github.repository }}/blob/main/priv/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Page 3](https://github.com/${{ github.repository }}/blob/main/priv/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+      - name: Set up GitHub Pages deployment
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: priv/
