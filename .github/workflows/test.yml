@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Deploy to GitHub Pages
+name: Generate HTML Pages and Deploy to Custom Branch
 
 on:
   push:
@@ -93,7 +93,7 @@ jobs:
       - name: Verify file existence (for debugging)
         run: |
           echo "Verifying if the files are created"
-          ls -alh # Verifique se os arquivos foram criados
+          ls -alh # Verify if files are created
 
   deploy-pages:
     needs: generate-pages
@@ -107,33 +107,30 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Create gh-pages branch if it doesn't exist
+      - name: Create pg-pages branch if it doesn't exist
         run: |
           git fetch --all
-          git checkout gh-pages || git checkout --orphan gh-pages
+          git checkout pg-pages || git checkout --orphan pg-pages
 
-      - name: Clean the gh-pages branch (delete all files)
+      - name: Clean the pg-pages branch (delete all files)
         run: |
-          # Garanta que você está na branch gh-pages
-          git checkout gh-pages
-          # Remove todos os arquivos da branch gh-pages
+          # Ensure we're on the pg-pages branch
+          git checkout pg-pages
+          # Remove all files in the pg-pages branch
           rm -rf ./*
 
-      - name: Copy generated HTML files to gh-pages branch
+      - name: Copy generated HTML files to pg-pages branch
         run: |
-          echo "Copying generated HTML files to the gh-pages branch"
-          # Verificando o conteúdo antes de copiar
-          ls -alh # Verifique se os arquivos estão presentes
-          # Copiar os arquivos para a raiz da branch gh-pages
+          echo "Copying generated HTML files to the pg-pages branch"
           cp -R ./index.html ./page1 ./page2 ./page3 ./
 
-      - name: Commit and push changes to gh-pages branch
+      - name: Commit and push changes to pg-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add .
-          git commit -m "Deploy HTML pages to GitHub Pages" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages --force
+          git commit -m "Deploy HTML pages to pg-pages branch" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} pg-pages --force
 
   display-summary:
     needs: deploy-pages
@@ -141,9 +138,9 @@ jobs:
     steps:
       - name: Display link to pages
         run: |
-          echo "## HTML Pages Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "## HTML Pages Deployed to pg-pages Branch" >> $GITHUB_STEP_SUMMARY
           echo "You can view the pages by clicking the links below:" >> $GITHUB_STEP_SUMMARY
-          echo "Main page: [Link to Main Page](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 1: [Link to Page 1](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page1/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 2: [Link to Page 2](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page2/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "Page 3: [Link to Page 3](https://github.com/${{ github.actor }}.github.io/${{ github.repository }}/page3/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Main page: [Link to Main Page](https://raw.githubusercontent.com/${{ github.repository }}/pg-pages/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 1: [Link to Page 1](https://raw.githubusercontent.com/${{ github.repository }}/pg-pages/page1/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 2: [Link to Page 2](https://raw.githubusercontent.com/${{ github.repository }}/pg-pages/page2/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "Page 3: [Link to Page 3](https://raw.githubusercontent.com/${{ github.repository }}/pg-pages/page3/index.html)" >> $GITHUB_STEP_SUMMARY
