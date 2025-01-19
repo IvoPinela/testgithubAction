@@ -38,7 +38,7 @@ jobs:
           </body>
           </html>' > docs/index.html
 
-      - name: Create page1/index.html
+      - name: Create page1/teste.html
         run: |
           mkdir -p docs/page1
           echo '<!DOCTYPE html>
