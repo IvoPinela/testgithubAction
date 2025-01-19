@@ -1,4 +1,4 @@
-name: Generate HTML Pages and Deploy to GitHub Pages
+name: Generate HTML Pages and Save to priv
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
 
       - name: Clean the priv directory
         run: |
-          rm -rf priv/*
+          rm -rf priv/* # Limpa o diretório 'priv' antes de adicionar os novos arquivos HTML
 
       - name: Create priv directory and index.html (Main page)
         run: |
@@ -102,15 +102,16 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add priv/
-          git diff --cached --exit-code || git commit -m "Generate HTML files"
+          git diff --cached --exit-code || git commit -m "Generate HTML files in priv/"
           git push origin main
 
-  deploy-pages:
+  upload-artifact:
     needs: generate-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GitHub Pages deployment
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload generated HTML files as artifact
+        uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: priv/
+          name: html-pages
+          path: priv/
+
